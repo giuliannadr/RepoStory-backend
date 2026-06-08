@@ -31,3 +31,20 @@ def get_user_repos(username: str):
             ]
         else:
             return {"error": "Repos not found"}
+        
+def get_repo_commits(username: str, repo_name: str):
+        url = f"https://api.github.com/repos/{username}/{repo_name}/commits"
+        response = requests.get(url)
+        if response.status_code == 200:
+            data = response.json()
+            return [
+                {
+                    "sha": commit.get("sha"),
+                    "author": commit.get("commit", {}).get("author", {}).get("name"),
+                    "message": commit.get("commit", {}).get("message"),
+                    "date": commit.get("commit", {}).get("author", {}).get("date")
+                }
+                for commit in data
+            ]
+        else:
+            return {"error": "Commits not found"}
