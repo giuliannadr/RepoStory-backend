@@ -1,7 +1,4 @@
 from fastapi import FastAPI
-from services.github_service import get_user_info
-
+from api.routes import users
 app = FastAPI()
-@app.get("/user/{username}")
-def read_user(username: str):
-    return get_user_info(username)
+app.include_router(users.router)
