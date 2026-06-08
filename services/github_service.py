@@ -48,3 +48,22 @@ def get_repo_commits(username: str, repo_name: str):
             ]
         else:
             return {"error": "Commits not found"}
+        
+def get_repo_stats(username: str, repo_name: str):
+        url = f"https://api.github.com/repos/{username}/{repo_name}"
+        response = requests.get(url)
+        commits = get_repo_commits(username, repo_name)
+        if response.status_code == 200:
+            data = response.json()
+            return {
+                "total commits": len(commits),
+                "different authors": len(set(commit.get("author") for commit in commits)),
+                "first and last commit": {
+                    "first": commits[-1] if commits else None,
+                    "last": commits[0] if commits else None
+                },
+                "recent commit message": commits[0].get("message") if commits else None,
+                
+            }
+        else:
+            return {"error": "Repo not found"}
